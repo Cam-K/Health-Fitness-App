@@ -1,0 +1,14 @@
+Health Fitness App
+
+Simple ncurses-based UI for Health Fitness Application
+
+How to compile:
+
+For Ubuntu-based Distros:
+gcc -I/usr/include/postgresql/ main.c -lpq -lmenu -lform -lncurses
+
+The location of the postgresql library might be different depending on 
+your Linux distro.
+
+How to run:
+./a.out
