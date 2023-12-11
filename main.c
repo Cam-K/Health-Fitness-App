@@ -125,66 +125,47 @@ void loginScreen(char* userName, char* password){
     getmaxyx(stdscr, screeny, screenx);
 	
 
-	/* Initialize few color pairs */
-   	init_pair(1, COLOR_RED, COLOR_BLACK);
 
-	/* Initialize the fields */
 	field[0] = new_field(1, fieldWidth, 6, 1, 0, 0);
 	field[1] = new_field(1, fieldWidth, 8, 1, 0, 0);
 	field[2] = new_field(1, fieldWidth, 10, 1, 0, 0);
 	field[3] = new_field(1, fieldWidth, 12, 1, 0, 0);
 	field[4] = NULL;
   
-	/* Set field options */
 	field_opts_off(field[0], O_ACTIVE);
 	field_opts_off(field[0], O_EDIT);
-	//set_field_back(field[0], A_UNDERLINE);
 	set_field_back(field[1], A_UNDERLINE);
 	field_opts_off(field[1], O_AUTOSKIP); 
 	field_opts_off(field[2], O_ACTIVE);
 	field_opts_off(field[2], O_EDIT);
-	//set_field_back(field[2], A_UNDERLINE);
 	set_field_back(field[3], A_UNDERLINE); 
 	field_opts_off(field[3], O_AUTOSKIP);
 	
-	/* Create the form and post it */
 	loginForm = new_form(field);
 	
-	/* Calculate the area required for the form */
 	scale_form(loginForm, &rows, &cols);
     windowSizeY = rows + 4;
     windowSizeX = cols + 4;
 
-	/* Create the window to be associated with the form */
     loginwin = newwin(windowSizeY, windowSizeX, screeny / 2 - rows + 4, screenx / 2 - cols + 4);
     keypad(loginwin, TRUE);
 
-	/* Set main window and sub window */
     set_form_win(loginForm, loginwin);
     formwin = derwin(loginwin, rows, cols, 2, 2);
     set_form_sub(loginForm, formwin);
 
-	/* Print a border around the main window and print a title */
     box(loginwin, 0, 0);
-	//print_in_middle(loginwin, 1, 0, cols + 4, "My Form", COLOR_PAIR(1));
-    //refresh();
 	post_form(loginForm);
     mvwprintw(loginwin, 2, windowSizeX / 2 - 2, "Login");
     mvwprintw(formwin, 6, 1, "Username");
     mvwprintw(formwin, 10, 1, "Password");
 	wrefresh(loginwin);
     
-	//mvprintw(LINES - 2, 0, "Use UP, DOWN arrow keys to switch between fields");
-	//refresh();
 
-	/* Loop through to get user requests */
 	while((ch = wgetch(loginwin)) != KEY_F(1))
 	{	switch(ch)
 		{	case KEY_DOWN:
-				/* Go to next field */
 				form_driver(loginForm, REQ_NEXT_FIELD);
-				/* Go to the end of the present buffer */
-				/* Leaves nicely at the last character */
 				form_driver(loginForm, REQ_END_LINE);
                 if(fieldNum == 0){
                     fieldNum = 1;
@@ -192,7 +173,6 @@ void loginScreen(char* userName, char* password){
                     fieldNum = 0;
 				break;
 			case KEY_UP:
-				/* Go to previous field */
 				form_driver(loginForm, REQ_PREV_FIELD);
 				form_driver(loginForm, REQ_END_LINE);
                 if(fieldNum == 0){
@@ -202,7 +182,6 @@ void loginScreen(char* userName, char* password){
 
 				break;
             case KEY_BACKSPACE:
-                //form_driver(loginForm, REQ_LEFT_CHAR);
                 form_driver(loginForm, REQ_DEL_PREV);
                 if(fieldNum == 0)
                     usernameField[strlen(usernameField)-1] = '\0';
@@ -223,8 +202,6 @@ void loginScreen(char* userName, char* password){
                 return;
                 break;
 			default:
-				/* If this is a normal character, it gets */
-				/* Printed				  */	
 				form_driver(loginForm, ch);
                 if(fieldNum == 0)
                     strncat(usernameField, (char*)&ch, 1);
@@ -234,7 +211,6 @@ void loginScreen(char* userName, char* password){
 		}
 	}
 
-	/* Un post form and free the memory */
 	unpost_form(loginForm);
 	free_form(loginForm);
 	free_field(field[0]);
